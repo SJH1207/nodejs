@@ -3,19 +3,19 @@ const express = require("express");
 const app = express();
 
 const mw = (req, res, next) => {
-  console.log("这是一个简单的中间件");
+  console.log("这是一个局部中间件");
+  next();
+};
+const mw2 = (req, res, next) => {
+  console.log("这是一个局部中间件222");
   next();
 };
 
-app.use(mw);
-
-app.get("/", (req, res) => {
-    console.log('获得/请求');
+app.get("/", mw, mw2, (req, res) => {
   res.send("获得/请求");
 });
 
-app.get("/user", (req, res) => {
-    console.log('获得/user请求');
+app.get("/user", [mw, mw2], (req, res) => {
   res.send("获得/user请求");
 });
 
