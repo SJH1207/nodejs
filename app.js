@@ -36,16 +36,6 @@ app.use((req, res, next) => {
 const userRouter = require("./router/user");
 app.use("/api", userRouter);
 
-// 定义错误级别的中间件
-app.use((err, req, res, next) => {
-  // 验证失败导致的错误
-  if (err instanceof joi.ValidationError) return res.cc(err);
-  // 身份认证失败后的错误
-  if (err.name === "UnauthorizedError") return res.cc("身份认证失败！");
-  // 未知的错误
-  res.cc(err);
-});
-
 app.listen(8080, () => {
   console.log("express is running at http://127.0.0.1:8080");
 });

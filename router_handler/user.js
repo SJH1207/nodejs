@@ -12,21 +12,18 @@ exports.regUser = (req, res) => {
   const userInfo = req.body;
   // 校验为空
   if (!userInfo.username || !userInfo.password) {
-    // return res.send({ code: 400,  msg: "username或password为空" });
-    return res.cc("username或password为空");
+    return res.send({ code: 400,  msg: "username或password为空" });
   }
 
   // 是否存在
   const sqlStr = "select * from user where username=?";
   db.query(sqlStr, userInfo.username, (error, result) => {
     if (error) {
-      // return res.send({ code: 400, msg: error.message });
-      return res.cc(error);
+      return res.send({ code: 400, msg: error.message });
     }
 
     if (result.length > 0) {
-      // return res.send({ code: 400, msg: "该用户名已被占用,请更换其他用户名!" });
-      return res.cc("该用户名已被占用,请更换其他用户名!");
+      return res.send({ code: 400, msg: "该用户名已被占用,请更换其他用户名!" });
     }
 
     // 加密密码
@@ -36,15 +33,12 @@ exports.regUser = (req, res) => {
     const addsql = "insert into user set ?";
     db.query(addsql, userInfo, (error, result) => {
       if (error) {
-        // return res.send({ code: 400, msg: error.message });
-        return res.cc(error);
+        return res.send({ code: 400, msg: error.message });
       }
       if (result.affectedRows !== 1) {
-        // return res.send({ code: 400, msg: "注册用户失败，请稍后再试！" });
-        return res.cc("注册用户失败，请稍后再试！");
+        return res.send({ code: 400, msg: "注册用户失败，请稍后再试！" });
       }
-      // res.send({ code: 200, msg: "注册成功!" });
-      res.cc("注册成功!", 200);
+      res.send({ code: 200, msg: "注册成功!" });
     });
   });
 };
@@ -57,8 +51,7 @@ exports.login = (req, res) => {
 
   // 校验为空
   if (!userInfo.username || !userInfo.password) {
-    // return res.send({ code: 400,  msg: "username或password为空" });
-    return res.cc("username或password为空");
+    return res.send({ code: 400,  msg: "username或password为空" });
   }
 
   // 定义 SQL 语句
@@ -68,14 +61,13 @@ exports.login = (req, res) => {
     // 执行 SQL 语句失败
     if (err) return res.cc(err);
     // 执行 SQL 语句成功，但是获取到的数据条数不等于 1
-    if (results.length !== 1) return res.cc("登录失败！");
-
+    if (results.length !== 1) return res.send({ code: 400,  msg: "登录失败！" });
     // TODO：判断密码是否正确
     const compareResult = bcrypt.compareSync(
       userInfo.password,
       results[0].password
     );
-    if (!compareResult) return res.cc("登录失败！");
+    if (!compareResult) return res.send({ code: 400,  msg: "登录失败！" });
 
     // TODO：在服务器端生成 Token 的字符串
     const user = { ...results[0], password: "", user_pic: "" };
@@ -85,8 +77,8 @@ exports.login = (req, res) => {
     });
     // 调用 res.send() 将 Token 响应给客户端
     res.send({
-      status: 200,
-      message: "登录成功！",
+      code: 200,
+      msg: "登录成功！",
       token: "Bearer " + tokenStr,
     });
   });
