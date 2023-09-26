@@ -59,7 +59,7 @@ exports.login = (req, res) => {
   // 执行 SQL 语句，根据用户名查询用户的信息
   db.query(sql, userInfo.username, (err, results) => {
     // 执行 SQL 语句失败
-    if (err) return res.cc(err);
+    if (err) return res.send({ code: 400, msg: error.message });
     // 执行 SQL 语句成功，但是获取到的数据条数不等于 1
     if (results.length !== 1) return res.send({ code: 400,  msg: "登录失败！" });
     // TODO：判断密码是否正确
