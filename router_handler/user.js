@@ -70,7 +70,8 @@ exports.login = (req, res) => {
     if (!compareResult) return res.send({ code: 400,  msg: "登录失败！" });
 
     // TODO：在服务器端生成 Token 的字符串
-    const user = { ...results[0], password: "", user_pic: "" };
+    const user = { ...results[0], password: "" };
+    console.log('user',user);
     // 对用户的信息进行加密，生成 Token 字符串
     const tokenStr = jwt.sign(user, config.jwtSecretKey, {
       expiresIn: config.expiresIn,
