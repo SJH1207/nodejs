@@ -8,5 +8,7 @@ const user_handler = require("../router_handler/user");
 router.post("/reguser", user_handler.regUser);
 // 登录
 router.post("/login", user_handler.login);
+// 登录
+router.post("/checkToken", user_handler.checkToken);
 
 module.exports = router;

@@ -12,7 +12,7 @@ exports.regUser = (req, res) => {
   const userInfo = req.body;
   // 校验为空
   if (!userInfo.username || !userInfo.password) {
-    return res.send({ code: 400,  msg: "username或password为空" });
+    return res.send({ code: 400, msg: "username或password为空" });
   }
 
   // 是否存在
@@ -51,7 +51,7 @@ exports.login = (req, res) => {
 
   // 校验为空
   if (!userInfo.username || !userInfo.password) {
-    return res.send({ code: 400,  msg: "username或password为空" });
+    return res.send({ code: 400, msg: "username或password为空" });
   }
 
   // 定义 SQL 语句
@@ -61,17 +61,17 @@ exports.login = (req, res) => {
     // 执行 SQL 语句失败
     if (err) return res.send({ code: 400, msg: error.message });
     // 执行 SQL 语句成功，但是获取到的数据条数不等于 1
-    if (results.length !== 1) return res.send({ code: 400,  msg: "登录失败！" });
+    if (results.length !== 1) return res.send({ code: 400, msg: "登录失败！" });
     // TODO：判断密码是否正确
     const compareResult = bcrypt.compareSync(
       userInfo.password,
       results[0].password
     );
-    if (!compareResult) return res.send({ code: 400,  msg: "登录失败！" });
+    if (!compareResult) return res.send({ code: 400, msg: "登录失败！" });
 
     // TODO：在服务器端生成 Token 的字符串
     const user = { ...results[0], password: "" };
-    console.log('user',user);
+    console.log("user", user);
     // 对用户的信息进行加密，生成 Token 字符串
     const tokenStr = jwt.sign(user, config.jwtSecretKey, {
       expiresIn: config.expiresIn,
@@ -83,4 +83,21 @@ exports.login = (req, res) => {
       token: "Bearer " + tokenStr,
     });
   });
+};
+// 检查token
+exports.checkToken = (req, res) => {
+  // 接收表单的数据
+  const token = req.body.token.slice(7);
+  console.log("userInfo", token);
+
+  // 校验为空
+  if (!token) {
+    return res.send({ code: 400, msg: "校验失败" });
+  }
+  try {
+    jwt.verify(token, config.jwtSecretKey);
+    return res.send({ code: 200, msg: "token校验通过" });
+  } catch (error) {
+    return res.send({ code: 400, msg: "token校验失败" });
+  }
 };
