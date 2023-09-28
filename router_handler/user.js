@@ -88,7 +88,7 @@ exports.login = (req, res) => {
 exports.checkToken = (req, res) => {
   // 接收表单的数据
   const token = req.body.token.slice(7);
-  console.log("userInfo", token);
+  console.log("userInfo", token); 
 
   // 校验为空
   if (!token) {
