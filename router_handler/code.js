@@ -39,7 +39,7 @@ exports.add = (req, res) => {
 // 查询
 exports.search = (req, res) => {
   const obj = req.body;
-console.log(obj,obj);
+  console.log(obj, obj);
   // 是否存在
   const sqlStr = `select * from video_code where teacher_name = '${
     obj.teacher_name
@@ -47,7 +47,9 @@ console.log(obj,obj);
     obj.video_code_ch || ""
   ).toUpperCase()}%" and magnet like "%${
     obj.magnet || ""
-  }%" and video_name like "%${obj.video_name || ""}%" order by id ${obj.order || 'desc'}`;
+  }%" and video_name like "%${obj.video_name || ""}%" order by id ${
+    obj.order || "desc"
+  }`;
 
   console.log("sqlStr", sqlStr);
   db.query(sqlStr, (error, result) => {
@@ -106,5 +108,25 @@ exports.edit = (req, res) => {
     }
     console.log(result);
     return res.send({ code: 200, msg: "编辑成功!" });
+  });
+};
+
+// 查询人
+exports.searchTeacher = (req, res) => {
+  const obj = req.body;
+  console.log(obj, obj);
+  // 是否存在
+  const sqlStr = `select * from teacher`;
+
+  db.query(sqlStr, (error, result) => {
+    console.log(error, result);
+    if (error) {
+      return res.send({ code: 400, msg: error.message });
+    }
+
+    if (result.length > 0) {
+      return res.send({ code: 200, msg: "查询成功!", data: result });
+    }
+    return res.send({ code: 200, msg: "查询成功!", data: [] });
   });
 };

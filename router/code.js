@@ -13,4 +13,7 @@ router.post("/del", code_handler.del);
 // 编辑
 router.post("/edit", code_handler.edit);
 
+// 查询人
+router.post("/searchTeacher", code_handler.searchTeacher);
+
 module.exports = router;

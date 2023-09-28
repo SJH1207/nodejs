@@ -81,6 +81,8 @@ exports.login = (req, res) => {
       code: 200,
       msg: "登录成功！",
       token: "Bearer " + tokenStr,
+      username: results[0].username,
+      nickname: results[0].nickname,
     });
   });
 };
@@ -88,7 +90,7 @@ exports.login = (req, res) => {
 exports.checkToken = (req, res) => {
   // 接收表单的数据
   const token = req.body.token.slice(7);
-  console.log("userInfo", token); 
+  console.log("userInfo", token);
 
   // 校验为空
   if (!token) {
@@ -96,7 +98,15 @@ exports.checkToken = (req, res) => {
   }
   try {
     jwt.verify(token, config.jwtSecretKey);
-    return res.send({ code: 200, msg: "token校验通过" });
+    const obj = jwt.decode(token, config.jwtSecretKey);
+    console.log(obj, "obj");
+
+    return res.send({
+      code: 200,
+      msg: "token校验通过",
+      username: obj?.user,
+      nickname: obj?.nickname,
+    });
   } catch (error) {
     return res.send({ code: 400, msg: "token校验失败" });
   }
