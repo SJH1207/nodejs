@@ -57,15 +57,32 @@ exports.search = (req, res) => {
   const obj = req.body;
   console.log(obj, obj);
   // 是否存在
-  const sqlStr = `select * from video_code where teacher_name = '${
-    obj.teacher_name
-  }'  and video_code_ch like "%${(
-    obj.video_code_ch || ""
-  ).toUpperCase()}%" and magnet like "%${
-    obj.magnet || ""
-  }%" and video_name like "%${obj.video_name || ""}%" order by id ${
-    obj.order || "desc"
-  }`;
+  const sqlStr =
+    obj.teacher_code === "DanJi"
+      ? `select * from video_code where collection = '${
+          obj.collection || 1
+        }' and status = '${obj.status || 1}' and teacher_code = '${
+          obj.teacher_code
+        }'and video_code_ch like "%${(
+          obj.video_code_ch || ""
+        ).toUpperCase()}%" and magnet like "%${
+          obj.magnet || ""
+        }%" and video_name like "%${obj.video_name || ""}%" order by id ${
+          obj.order || "desc"
+        }`
+      : `select * from video_code where collection = '${
+          obj.collection || 1
+        }' and status = '${obj.status || 1}' and teacher_code = '${
+          obj.teacher_code
+        }'and teacher_name like "%${
+          obj.teacher_name || ""
+        }%"  and video_code_ch like "%${(
+          obj.video_code_ch || ""
+        ).toUpperCase()}%" and magnet like "%${
+          obj.magnet || ""
+        }%" and video_name like "%${obj.video_name || ""}%" order by id ${
+          obj.order || "desc"
+        }`;
 
   console.log("sqlStr", sqlStr);
   db.query(sqlStr, (error, result) => {
@@ -91,7 +108,9 @@ exports.del = (req, res) => {
     return res.send({ code: 400, msg: "id为空" });
   }
   // 是否存在
-  const delSql = "delete from video_code where id= ?";
+  // const delSql = "delete from video_code where id= ?";
+
+  const delSql = `update video_code set status = '0' where id= ?`;
 
   db.query(delSql, obj.id, (error, result) => {
     console.log(error, result);
