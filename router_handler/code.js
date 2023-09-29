@@ -1,6 +1,12 @@
 // 导入数据库操作模块
 const db = require("../db/index");
 
+// 测试
+exports.test = (req, res) => {
+  const obj = req.body;
+  return res.send({ code: 200, msg: "测试成功", data:obj });
+};
+
 // 新增
 exports.add = (req, res) => {
   const obj = req.body;

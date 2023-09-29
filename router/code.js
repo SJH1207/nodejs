@@ -5,6 +5,8 @@ const router = express.Router();
 const code_handler = require("../router_handler/code");
 
 // 新增
+router.get("/test", code_handler.test);
+// 新增
 router.post("/add", code_handler.add);
 // 查询
 router.post("/search", code_handler.search);
