@@ -3,8 +3,18 @@ const db = require("../db/index");
 
 // 测试
 exports.test = (req, res) => {
-  const obj = req.body;
-  return res.send({ code: 200, msg: "测试成功", data:obj });
+  const sqlStr = `select * from teacher`;
+  db.query(sqlStr, (error, result) => {
+    console.log(error, result);
+    if (error) {
+      return res.send({ code: 400, msg: error.message });
+    }
+
+    if (result.length > 0) {
+      return res.send({ code: 200, msg: "查询成功!", data: result });
+    }
+    return res.send({ code: 200, msg: "查询成功!", data: [] });
+  });
 };
 
 // 新增
